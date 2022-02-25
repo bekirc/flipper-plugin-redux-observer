@@ -73,8 +73,6 @@ const columns: DataTableColumn<Row>[] = [
 	},
 ];
 
-// Read more: https://fbflipper.com/docs/tutorial/js-custom#creating-a-first-plugin
-// API: https://fbflipper.com/docs/extending/flipper-plugin#pluginclient
 export function plugin(client: PluginClient<Events, SendEvents>) {
 	const storeDatas = createState<StoreData[]>([], { persist: 'storeData' });
 	const selectedID = createState<number | null>(null, { persist: 'selectionID' });
