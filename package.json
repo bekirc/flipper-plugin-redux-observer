@@ -4,11 +4,15 @@
   "id": "flipper-plugin-redux-observer",
   "version": "1.0.0",
   "pluginType": "client",
+  "homepage": "https://github.com/bekirc/flipper-plugin-redux-observer",
+  "author": "Bekir Cinar",
   "main": "dist/bundle.js",
   "flipperBundlerEntry": "src/index.tsx",
   "license": "MIT",
   "keywords": [
-    "flipper-plugin"
+    "flipper-plugin",
+    "redux",
+    "react-native"
   ],
   "icon": "apps",
   "title": "Redux Observer",
