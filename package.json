@@ -22,7 +22,8 @@
     "prepack": "flipper-pkg lint && flipper-pkg bundle",
     "build": "flipper-pkg bundle",
     "watch": "flipper-pkg bundle --watch",
-    "test": "jest --no-watchman"
+    "test": "jest --no-watchman",
+    "postinstall": "patch-package"
   },
   "peerDependencies": {
     "@emotion/styled": "latest",
@@ -44,6 +45,7 @@
     "flipper-plugin": "latest",
     "jest": "latest",
     "jest-mock-console": "latest",
+    "patch-package": "^6.4.7",
     "react": "latest",
     "react-dom": "latest",
     "typescript": "latest"

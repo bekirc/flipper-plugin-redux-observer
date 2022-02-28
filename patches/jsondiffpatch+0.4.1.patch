@@ -1,0 +1,12 @@
+diff --git a/node_modules/jsondiffpatch/package.json b/node_modules/jsondiffpatch/package.json
+index 04e5b31..c5b2c59 100644
+--- a/node_modules/jsondiffpatch/package.json
++++ b/node_modules/jsondiffpatch/package.json
+@@ -39,7 +39,6 @@
+     "patch"
+   ],
+   "dependencies": {
+-    "chalk": "^2.3.0",
+     "diff-match-patch": "^1.0.0"
+   },
+   "devDependencies": {
