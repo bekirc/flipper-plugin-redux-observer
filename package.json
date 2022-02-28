@@ -2,9 +2,10 @@
   "$schema": "https://fbflipper.com/schemas/plugin-package/v2.json",
   "name": "flipper-plugin-redux-observer",
   "id": "flipper-plugin-redux-observer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "pluginType": "client",
   "homepage": "https://github.com/bekirc/flipper-plugin-redux-observer",
+  "description": "Observe your Redux store",
   "author": "Bekir Cinar",
   "main": "dist/bundle.js",
   "flipperBundlerEntry": "src/index.tsx",
@@ -51,6 +52,6 @@
     "testEnvironment": "jsdom"
   },
   "dependencies": {
-    "jsonpatch": "^3.1.0"
+    "jsondiffpatch": "^0.4.1"
   }
 }

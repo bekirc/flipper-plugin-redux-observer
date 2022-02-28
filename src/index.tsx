@@ -1,4 +1,4 @@
-import { Button, Input } from 'antd';
+import { Button, Input, message } from 'antd';
 import {
 	createState,
 	DataInspector,
@@ -12,7 +12,8 @@ import {
 	usePlugin,
 	useValue,
 } from 'flipper-plugin';
-import { apply_patch } from 'jsonpatch';
+//@ts-ignore
+import { clone, patch } from 'jsondiffpatch';
 import React, { useCallback } from 'react';
 
 type Action = {
@@ -21,24 +22,29 @@ type Action = {
 };
 
 type InitStoreEvent = {
-	id: number;
+	id: string;
 	time: string;
 	action: Action;
 	state: object;
 };
 
+interface Delta {
+    [key: string]: any;
+    [key: number]: any;
+}
+
 type ActionEvent = {
-	id: number;
+	id: string;
 	time: string;
 	action: Action;
-	diff: string | undefined;
+	diff: Delta | undefined;
 };
 
 type StoreData = {
-	id: number;
+	id: string;
 	time: string;
 	action: Action;
-  previousState: object;
+  	previousState: object;
 	state: object;
 };
 
@@ -53,7 +59,7 @@ type SendEvents = {
 };
 
 type Row = {
-	id: number;
+	id: string;
 	time: string;
 	type: string;
 };
@@ -75,23 +81,34 @@ const columns: DataTableColumn<Row>[] = [
 
 export function plugin(client: PluginClient<Events, SendEvents>) {
 	const storeDatas = createState<StoreData[]>([], { persist: 'storeData' });
-	const selectedID = createState<number | null>(null, { persist: 'selectionID' });
+	const selectedID = createState<string | null>(null, { persist: 'selectionID' });
 	const state = createState<any>({}, { persist: 'state' });
 	const actionType = createState<string>();
 	const actionPayload = createState<string>();
 
 	client.onMessage('newAction', (newActionEvent) => {
 		storeDatas.update((draft) => {
-			const diff = newActionEvent.diff;
+			const delta = newActionEvent.diff;
 			const currentState = state.get();
-			const newState = apply_patch(currentState, JSON.parse(diff || '[]'));
+			let newState = undefined;
+			try {
+				if(delta !== undefined) {
+					newState = patch(clone(currentState), delta);
+				}
+			} catch(e) {
+				newState = undefined;
+				message.error(`${newActionEvent.action.type}`);
+			}
+			if(newState === undefined) {
+				newState = currentState;
+			}
 			state.set(newState);
 			draft.push({
 				id: newActionEvent.id,
 				time: newActionEvent.time,
 				action: newActionEvent.action,
 				state: newState,
-        previousState: currentState,
+        		previousState: currentState,
 			});
 		});
 	});
@@ -100,7 +117,7 @@ export function plugin(client: PluginClient<Events, SendEvents>) {
 		state.set(initStoreEvent.state);
 	});
 
-	function setSelectionID(id?: number) {
+	function setSelectionID(id?: string) {
 		if (id === undefined) return;
 		selectedID.set(id);
 	}
@@ -125,11 +142,11 @@ export function plugin(client: PluginClient<Events, SendEvents>) {
 				try {
 					payload = actionPayloadValue?.trim() == '' ? [] : JSON.parse(actionPayloadValue || '');
 				} catch (e) {
-					payload = actionPayloadValue;
+					payload = {};
 				}
 
 				client.send('dispatchAction', {
-					type: actionPayload.get() || '',
+					type: actionType.get() || '',
 					payload: payload,
 				});
 			} catch (e) {}
@@ -169,7 +186,7 @@ export function Component() {
 		[storeDatas],
 	);
 
-  const onRowSelect = useCallback((row?: { id: number}) => {
+  const onRowSelect = useCallback((row?: { id: string}) => {
     instance.setSelectionID(row?.id)
   }, []);
 
