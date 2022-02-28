@@ -6,7 +6,7 @@ It is sending diff between old and new states instead of all states to Flipper d
 ## Installation
 
 ```bash
-yarn add react-native-flipper flipper-redux-observer
+yarn add react-native-flipper flipper-redux-observer --dev
 ```
 
 ## Setup
